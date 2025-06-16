@@ -52,6 +52,7 @@ async def scrape_product_endpoint(
             scraped_price=scrape_result.get("price"),
             scraped_currency=scrape_result.get("currency"),
             scraped_description=scrape_result.get("description"),
+
             product_url=scrape_result.get("url"),
             scraped_at=scrape_result["scraped_at"],
             status=scrape_result["status"],
@@ -67,6 +68,7 @@ async def scrape_product_endpoint(
                 status=scrape_result["status"],
                 product_title=scrape_result.get("product_title"),
                 price=scrape_result.get("price"),
+
                 description=scrape_result.get("description"),
                 url=scrape_result.get("url"),
                 scraped_at=scrape_result["scraped_at"],

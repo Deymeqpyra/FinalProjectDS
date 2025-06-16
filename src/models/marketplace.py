@@ -1,3 +1,4 @@
+
 from sqlalchemy import JSON, String, Boolean, DateTime, null
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
@@ -6,6 +7,7 @@ from database import Base
 
 class Marketplace(Base):
     __tablename__ = "marketplaces"
+
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, unique=True)
     base_search_url: Mapped[str] = mapped_column(String, nullable=True)

@@ -6,6 +6,7 @@ from database import Base
 
 class ScrapedProduct(Base):
     __tablename__ = "scraped_products"
+
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     request_id: Mapped[int] = mapped_column(ForeignKey("scrape_requests.id"))
     marketplace_id: Mapped[int] = mapped_column(ForeignKey("marketplaces.id"))
@@ -17,3 +18,4 @@ class ScrapedProduct(Base):
     scraped_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     status: Mapped[str] = mapped_column(String)
     error_message: Mapped[str | None] = mapped_column(String, nullable=True)
+
