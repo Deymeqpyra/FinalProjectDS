@@ -1,11 +1,9 @@
-from playwright.async_api import async_playwright
-from bs4 import BeautifulSoup
-import aiohttp
 from datetime import datetime
-from models import marketplace
-from datetime import datetime
-from playwright.async_api import async_playwright
 from urllib.parse import urljoin
+from playwright.async_api import async_playwright
+from playwright_stealth import stealth_async
+from bs4 import BeautifulSoup
+from models import marketplace
 
 
 async def scrape_product(marketplace: marketplace.Marketplace, product_name: str):
@@ -20,57 +18,50 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
         "error_message": None,
     }
 
+    browser = None
     try:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page()
-            await page.set_extra_http_headers(
-                {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-                    "Accept-Language": "uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7",
-                }
-            )
-            await page.goto(search_url, timeout=20000)
-            await page.mouse.move(100, 100)
-            await page.mouse.click(100, 100)
-            await page.wait_for_timeout(1500)
+            context = await browser.new_context()
+            page = await context.new_page()
 
-            await page.wait_for_selector(
-                str(marketplace.product_selector), timeout=10000
-            )
+            await stealth_async(page)
 
-            product_element = await page.query_selector(
-                str(marketplace.product_selector)
-            )
+            await page.goto(search_url, timeout=30000)
+            await page.wait_for_timeout(6000)  # час на рендеринг
 
-            if not product_element:
-                result["error_message"] = "Product element not found (even in iframe)"
-                await browser.close()
-                return result
+            # Очікуємо, поки елемент з селектором Playwright стане видимим
+            await page.wait_for_selector(marketplace.product_selector, timeout=10000)
 
-            title_elem = await product_element.query_selector(
-                str(marketplace.title_selector)
-            )
-            price_elem = await product_element.query_selector(
-                str(marketplace.price_selector)
-            )
-            link_elem = await product_element.query_selector(
-                str(marketplace.link_selector)
-            )
+            html = await page.content()
 
-            result["scraped_product_title"] = (
-                await title_elem.inner_text() if title_elem else None
-            )
-            result["scraped_price"] = (
-                await price_elem.inner_text() if price_elem else None
-            )
-            raw_href = await link_elem.get_attribute("href") if link_elem else None
-            result["product_url"] = urljoin(search_url, raw_href) if raw_href else None
-            result["status"] = "success"
+        # Парсимо отриманий HTML через BeautifulSoup
+        soup = BeautifulSoup(html, "html.parser")
 
-            await browser.close()
+        product_element = soup.select_one(marketplace.product_selector)
+        if not product_element:
+            result["error_message"] = "Product element not found in BeautifulSoup"
+            return result
+
+        title_elem = product_element.select_one(marketplace.title_selector)
+        price_elem = product_element.select_one(marketplace.price_selector)
+        link_elem = product_element.select_one(marketplace.link_selector)
+
+        result["scraped_product_title"] = (
+            title_elem.get_text(strip=True) if title_elem else None
+        )
+        result["scraped_price"] = (
+            price_elem.get_text(strip=True) if price_elem else None
+        )
+
+        raw_href = link_elem.get("href") if link_elem else None
+        result["product_url"] = urljoin(search_url, raw_href) if raw_href else None
+        result["status"] = "success"
 
     except Exception as e:
-        result["error_message"] = str(e)
+        result["error_message"] = f"{type(e).__name__}: {str(e)}"
+    finally:
+        if browser:
+            await browser.close()
 
     return result
