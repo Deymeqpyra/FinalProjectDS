@@ -40,6 +40,7 @@ async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCre
         product_url=str(product_data.product_url),
         scraped_at=product_data.scraped_at,
         status=product_data.status,
+        scraped_description=product_data.scraped_description,
         error_message=product_data.error_message,
     )
     db.add(new_product)

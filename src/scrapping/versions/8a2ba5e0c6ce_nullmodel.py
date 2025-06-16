@@ -1,8 +1,8 @@
-"""inital
+"""nullmodel
 
-Revision ID: f1186011fe4b
+Revision ID: 8a2ba5e0c6ce
 Revises: 
-Create Date: 2025-06-16 23:19:46.708931
+Create Date: 2025-06-17 00:17:06.317581
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f1186011fe4b'
+revision: str = '8a2ba5e0c6ce'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,14 +24,15 @@ def upgrade() -> None:
     op.create_table('marketplaces',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
-    sa.Column('base_search_url', sa.String(), nullable=False),
-    sa.Column('product_selector', sa.String(), nullable=False),
+    sa.Column('base_search_url', sa.String(), nullable=True),
+    sa.Column('product_selector', sa.String(), nullable=True),
     sa.Column('tag', sa.String(), nullable=True),
     sa.Column('additional_tag', sa.String(), nullable=True),
-    sa.Column('title_selector', sa.String(), nullable=False),
-    sa.Column('price_selector', sa.String(), nullable=False),
-    sa.Column('link_selector', sa.String(), nullable=False),
+    sa.Column('title_selector', sa.String(), nullable=True),
+    sa.Column('price_selector', sa.String(), nullable=True),
+    sa.Column('link_selector', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('description_selector', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -52,6 +53,7 @@ def upgrade() -> None:
     sa.Column('scraped_product_title', sa.String(), nullable=False),
     sa.Column('scraped_price', sa.String(), nullable=False),
     sa.Column('scraped_currency', sa.String(), nullable=True),
+    sa.Column('scraped_description', sa.String(), nullable=True),
     sa.Column('product_url', sa.String(), nullable=False),
     sa.Column('scraped_at', sa.DateTime(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),

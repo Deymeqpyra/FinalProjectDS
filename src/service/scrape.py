@@ -13,6 +13,7 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
         "product_title": None,
         "price": None,
         "url": None,
+        "description": None,
         "scraped_at": datetime.now(),
         "status": "error_scraping",
         "error_message": None,
@@ -36,19 +37,19 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
 
         soup = BeautifulSoup(html, "html.parser")
 
-        title_element = soup.find(
-            str(marketplace.tag), class_=marketplace.title_selector
-        )
-        price_element = soup.find(
-            str(marketplace.tag), class_=marketplace.price_selector
-        )
-        url_element = soup.find(str(marketplace.tag), class_=marketplace.title_selector)
+        title_element = soup.find(class_=marketplace.title_selector)
+        price_element = soup.find(class_=marketplace.price_selector)
+        url_element = soup.find(class_=marketplace.title_selector)
+        desc_element = soup.find(class_=marketplace.description_selector)
 
         result["product_title"] = (
             title_element.get_text(strip=True) if title_element else None
         )
         result["price"] = price_element.get_text(strip=True) if price_element else None
         result["url"] = url_element.get("href") if url_element else None
+        result["description"] = (
+            desc_element.get_text(strip=True) if price_element else None
+        )
         result["status"] = "success"
 
     except Exception as e:

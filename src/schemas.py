@@ -10,6 +10,7 @@ class MarketplaceBase(BaseModel):
     title_selector: str
     price_selector: str
     link_selector: str
+    description_selector: str
 
 
 class MarketplaceCreate(MarketplaceBase):
@@ -34,6 +35,7 @@ class ScrapedProductBase(BaseModel):
     scraped_product_title: Optional[str] = None
     scraped_price: Optional[str] = None
     scraped_currency: Optional[str] = None
+    scraped_description: Optional[str] = None
     product_url: Optional[HttpUrl] = None
     scraped_at: datetime
     status: str
@@ -72,6 +74,7 @@ class ScrapeResultItem(BaseModel):
     status: str
     product_title: Optional[str] = None
     price: Optional[str] = None
+    description: Optional[str] = None
     url: Optional[HttpUrl] = None
     scraped_at: datetime
     error_message: Optional[str] = None

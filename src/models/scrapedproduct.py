@@ -12,6 +12,7 @@ class ScrapedProduct(Base):
     scraped_product_title: Mapped[str] = mapped_column(String)
     scraped_price: Mapped[str] = mapped_column(String)
     scraped_currency: Mapped[str | None] = mapped_column(String, nullable=True)
+    scraped_description: Mapped[str | None] = mapped_column(String, nullable=True)
     product_url: Mapped[str] = mapped_column(String)
     scraped_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     status: Mapped[str] = mapped_column(String)
