@@ -4,6 +4,7 @@ from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
 from bs4 import BeautifulSoup
 from models import marketplace
+from service import jsonformater
 
 
 async def scrape_product(marketplace: marketplace.Marketplace, product_name: str):
@@ -41,15 +42,21 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
         price_element = soup.find(class_=marketplace.price_selector)
         url_element = soup.find(class_=marketplace.title_selector)
         desc_element = soup.find(class_=marketplace.description_selector)
+        description = {}
+        for dl in soup.find_all("dl"):
+            dt = dl.find("dt")
+            dd = dl.find("dd")
+            if dt and dd:
+                key = dt.get_text(strip=True)
+                value = dd.get_text(strip=True)
+                description[key] = value
 
         result["product_title"] = (
             title_element.get_text(strip=True) if title_element else None
         )
         result["price"] = price_element.get_text(strip=True) if price_element else None
         result["url"] = url_element.get("href") if url_element else None
-        result["description"] = (
-            desc_element.get_text(strip=True) if price_element else None
-        )
+        result["description"] = description if desc_element else None
         result["status"] = "success"
 
     except Exception as e:

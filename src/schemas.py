@@ -2,6 +2,8 @@ from pydantic import BaseModel, HttpUrl
 from typing import Optional, List
 from datetime import datetime
 
+from sqlalchemy import JSON
+
 
 class MarketplaceBase(BaseModel):
     name: str
@@ -35,7 +37,7 @@ class ScrapedProductBase(BaseModel):
     scraped_product_title: Optional[str] = None
     scraped_price: Optional[str] = None
     scraped_currency: Optional[str] = None
-    scraped_description: Optional[str] = None
+    scraped_description: Optional[dict] = None
     product_url: Optional[HttpUrl] = None
     scraped_at: datetime
     status: str
@@ -74,7 +76,7 @@ class ScrapeResultItem(BaseModel):
     status: str
     product_title: Optional[str] = None
     price: Optional[str] = None
-    description: Optional[str] = None
+    description: Optional[dict] = None
     url: Optional[HttpUrl] = None
     scraped_at: datetime
     error_message: Optional[str] = None
