@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert
+from sqlalchemy.orm import joinedload
 from models import scraperequest
 from models import scrapedproduct
 from schemas import ScrapeRequestCreate
@@ -26,7 +27,7 @@ async def get_scrape_request(db: AsyncSession, request_id: int):
 
 
 async def get_all_scrape_requests(db: AsyncSession):
-    result = await db.execute(select(scraperequest))
+    result = await db.execute(select(scraperequest.ScrapeRequest))
     return result.scalars().all()
 
 
@@ -51,8 +52,8 @@ async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCre
 
 async def get_scraped_products_by_request_id(db: AsyncSession, request_id: int):
     result = await db.execute(
-        select(scraperequest).where(
-            scraperequest.ScrapeRequest.scrape_request_id == request_id
+        select(scrapedproduct.ScrapedProduct).where(
+            scrapedproduct.ScrapedProduct.request_id == request_id
         )
     )
     return result.scalars().all()

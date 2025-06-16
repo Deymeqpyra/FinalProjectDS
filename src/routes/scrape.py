@@ -16,6 +16,42 @@ from typing import List, Optional
 router = APIRouter()
 
 
+@router.get("/get-all-requests")
+async def get_all(db: AsyncSession = Depends(get_db)):
+    try:
+        result = await crud_scrape.get_all_scrape_requests(db)
+        if result is None:
+            raise HTTPException(404, "Not found any writes")
+        return result
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@router.get("/get-request")
+async def get_request(id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        result = await crud_scrape.get_scrape_request(db, id)
+        if result is None:
+            raise HTTPException(404, "Not found")
+        return result
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@router.get("/get-products-by-request-id")
+async def get_products_by_request_id(id: int, db: AsyncSession = Depends(get_db)):
+    try:
+        request = await crud_scrape.get_scrape_request(db, id)
+        if request is None:
+            raise HTTPException(404, "Request not found")
+        result = await crud_scrape.get_scraped_products_by_request_id(db, id)
+        if result is None:
+            raise HTTPException(404, "Not found any products by this request")
+        return result
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
 @router.post("/", response_model=ScrapeProductResponse)
 async def scrape_product_endpoint(
     request: ScrapeRequestCreate,
