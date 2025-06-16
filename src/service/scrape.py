@@ -1,10 +1,9 @@
-from datetime import datetime
+from datetime import date, datetime
 from urllib.parse import urljoin
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
 from bs4 import BeautifulSoup
 from models import marketplace
-from service import jsonformater
 
 
 async def scrape_product(marketplace: marketplace.Marketplace, product_name: str):
@@ -15,7 +14,7 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
         "price": None,
         "url": None,
         "description": None,
-        "scraped_at": datetime.now(),
+        "scraped_at": date.today(),
         "status": "error_scraping",
         "error_message": None,
     }

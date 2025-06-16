@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: dcbecd2285f8
+Revision ID: b7328873e442
 Revises: 
-Create Date: 2025-06-17 00:48:42.936036
+Create Date: 2025-06-17 01:43:55.525828
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'dcbecd2285f8'
+revision: str = 'b7328873e442'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -33,8 +33,8 @@ def upgrade() -> None:
     sa.Column('link_selector', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('description_selector', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('updated_at', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
@@ -42,7 +42,7 @@ def upgrade() -> None:
     op.create_table('scrape_requests',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_name_searched', sa.String(), nullable=False),
-    sa.Column('requested_at', sa.DateTime(), nullable=False),
+    sa.Column('requested_at', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_scrape_requests_id'), 'scrape_requests', ['id'], unique=False)
@@ -55,7 +55,7 @@ def upgrade() -> None:
     sa.Column('scraped_currency', sa.String(), nullable=True),
     sa.Column('scraped_description', sa.JSON(), nullable=True),
     sa.Column('product_url', sa.String(), nullable=False),
-    sa.Column('scraped_at', sa.DateTime(), nullable=False),
+    sa.Column('scraped_at', sa.Date(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('error_message', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['marketplace_id'], ['marketplaces.id'], ),

@@ -31,6 +31,15 @@ async def get_all_scrape_requests(db: AsyncSession):
     return result.scalars().all()
 
 
+async def get_requests_by_date(date: datetime.date, db: AsyncSession):
+    result = await db.execute(
+        select(scraperequest.ScrapeRequest).where(
+            scraperequest.ScrapeRequest.requested_at == date
+        )
+    )
+    return result.scalars().all()
+
+
 async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCreate):
     new_product = scrapedproduct.ScrapedProduct(
         request_id=product_data.request_id,

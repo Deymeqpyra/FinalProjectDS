@@ -1,6 +1,6 @@
-from sqlalchemy import JSON, Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import JSON, Column, Date, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-from datetime import datetime
+from datetime import date, datetime
 from database import Base
 
 
@@ -14,6 +14,6 @@ class ScrapedProduct(Base):
     scraped_currency: Mapped[str | None] = mapped_column(String, nullable=True)
     scraped_description: Mapped[JSON | None] = mapped_column(JSON, nullable=True)
     product_url: Mapped[str] = mapped_column(String)
-    scraped_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    scraped_at: Mapped[date] = mapped_column(Date, default=date.today())
     status: Mapped[str] = mapped_column(String)
     error_message: Mapped[str | None] = mapped_column(String, nullable=True)

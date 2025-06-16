@@ -10,7 +10,7 @@ from schemas import (
 from crud import scrape as crud_scrape
 from crud import marketplace as crud_marketplace
 from service import scrape
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, Optional
 
 router = APIRouter()
@@ -33,6 +33,18 @@ async def get_request(id: int, db: AsyncSession = Depends(get_db)):
         result = await crud_scrape.get_scrape_request(db, id)
         if result is None:
             raise HTTPException(404, "Not found")
+        return result
+    except Exception as e:
+        raise HTTPException(500, str(e))
+
+
+@router.get("/get-request-by-date")
+async def get_requests_by_date(date: date, db: AsyncSession = Depends(get_db)):
+    try:
+        result = await crud_scrape.get_requests_by_date(date, db)
+        if result is None:
+            raise HTTPException(404, "Not found")
+
         return result
     except Exception as e:
         raise HTTPException(500, str(e))
@@ -119,5 +131,5 @@ async def scrape_product_endpoint(
             "successful_scrapes": sum(1 for r in results if r.status == "success"),
             "failed_scrapes": sum(1 for r in results if r.status != "success"),
         },
-        scraped_at=datetime.utcnow(),
+        scraped_at=date.today(),
     )
