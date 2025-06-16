@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: b7328873e442
+Revision ID: 4960e9af7ad6
 Revises: 
-Create Date: 2025-06-17 01:43:55.525828
+Create Date: 2025-06-17 02:49:38.995684
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'b7328873e442'
+revision: str = '4960e9af7ad6'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,6 +39,13 @@ def upgrade() -> None:
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_marketplaces_id'), 'marketplaces', ['id'], unique=False)
+    op.create_table('products',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('global_query_name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
     op.create_table('scrape_requests',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_name_searched', sa.String(), nullable=False),
@@ -73,6 +80,8 @@ def downgrade() -> None:
     op.drop_table('scraped_products')
     op.drop_index(op.f('ix_scrape_requests_id'), table_name='scrape_requests')
     op.drop_table('scrape_requests')
+    op.drop_index(op.f('ix_products_id'), table_name='products')
+    op.drop_table('products')
     op.drop_index(op.f('ix_marketplaces_id'), table_name='marketplaces')
     op.drop_table('marketplaces')
     # ### end Alembic commands ###

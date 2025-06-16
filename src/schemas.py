@@ -88,3 +88,23 @@ class ScrapeProductResponse(BaseModel):
     results: List[ScrapeResultItem]
     summary: dict
     scraped_at: date
+
+
+class ProductBase(BaseModel):
+    global_query_name: str
+    description: str
+
+
+class ProductCreate(ProductBase):
+    pass
+
+
+class ProductUpdate(ProductBase):
+    id: int
+
+
+class Product(ProductBase):
+    id: int
+
+    class Config:
+        orm_mode = True
