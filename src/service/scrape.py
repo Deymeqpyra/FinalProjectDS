@@ -10,9 +10,9 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
     search_url = marketplace.base_search_url.format(query=product_name)
     result = {
         "marketplace_id": marketplace.id,
-        "scraped_product_title": None,
-        "scraped_price": None,
-        "product_url": None,
+        "product_title": None,
+        "price": None,
+        "url": None,
         "scraped_at": datetime.now(),
         "status": "error_scraping",
         "error_message": None,
@@ -27,35 +27,28 @@ async def scrape_product(marketplace: marketplace.Marketplace, product_name: str
 
             await stealth_async(page)
 
-            await page.goto(search_url, timeout=30000)
-            await page.wait_for_timeout(6000)  # час на рендеринг
+            await page.goto(search_url, timeout=10000)
+            await page.wait_for_timeout(6000)
 
-            # Очікуємо, поки елемент з селектором Playwright стане видимим
             await page.wait_for_selector(marketplace.product_selector, timeout=10000)
 
             html = await page.content()
 
-        # Парсимо отриманий HTML через BeautifulSoup
         soup = BeautifulSoup(html, "html.parser")
 
-        product_element = soup.select_one(marketplace.product_selector)
-        if not product_element:
-            result["error_message"] = "Product element not found in BeautifulSoup"
-            return result
-
-        title_elem = product_element.select_one(marketplace.title_selector)
-        price_elem = product_element.select_one(marketplace.price_selector)
-        link_elem = product_element.select_one(marketplace.link_selector)
-
-        result["scraped_product_title"] = (
-            title_elem.get_text(strip=True) if title_elem else None
+        title_element = soup.find(
+            str(marketplace.tag), class_=marketplace.title_selector
         )
-        result["scraped_price"] = (
-            price_elem.get_text(strip=True) if price_elem else None
+        price_element = soup.find(
+            str(marketplace.tag), class_=marketplace.price_selector
         )
+        url_element = soup.find(str(marketplace.tag), class_=marketplace.title_selector)
 
-        raw_href = link_elem.get("href") if link_elem else None
-        result["product_url"] = urljoin(search_url, raw_href) if raw_href else None
+        result["product_title"] = (
+            title_element.get_text(strip=True) if title_element else None
+        )
+        result["price"] = price_element.get_text(strip=True) if price_element else None
+        result["url"] = url_element.get("href") if url_element else None
         result["status"] = "success"
 
     except Exception as e:
