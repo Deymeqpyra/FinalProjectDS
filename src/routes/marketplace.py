@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
-from crud import marketplace as crud_marketplace
-from schemas import MarketplaceCreate, MarketplaceUpdate, MarketplaceOut
+from src.database import get_db
+from src.crud import marketplace as crud_marketplace
+from src.schemas import MarketplaceCreate, MarketplaceUpdate, MarketplaceOut
 
 router = APIRouter()
 

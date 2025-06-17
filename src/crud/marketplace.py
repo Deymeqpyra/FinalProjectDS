@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update, delete
-from models.marketplace import Marketplace
-from schemas import MarketplaceCreate, MarketplaceUpdate
+from src.models.marketplace import Marketplace
+from src.schemas import MarketplaceCreate, MarketplaceUpdate
 
 
 async def create_marketplace(db: AsyncSession, marketplace: MarketplaceCreate):

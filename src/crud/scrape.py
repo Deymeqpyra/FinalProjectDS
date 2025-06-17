@@ -3,10 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert
 from sqlalchemy.orm import joinedload
-from models import scraperequest
-from models import scrapedproduct
-from schemas import ScrapeRequestCreate
-from schemas import ScrapedProductCreate
+from src.models import scraperequest
+from src.models import scrapedproduct
+from src.schemas import ScrapeRequestCreate
+from src.schemas import ScrapedProductCreate
 
 
 async def create_scrape_request(db: AsyncSession, request_data: ScrapeRequestCreate):

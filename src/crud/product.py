@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update, delete
-from models.product import Product
-from schemas import ProductCreate, ProductUpdate
+from src.models.product import Product
+from src.schemas import ProductCreate, ProductUpdate
 
 
 async def create_product(db: AsyncSession, product: ProductCreate):

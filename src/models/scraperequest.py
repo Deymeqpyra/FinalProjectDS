@@ -2,7 +2,7 @@ from sqlalchemy import Column, Date, Integer, String, DateTime
 from datetime import date, datetime
 
 from sqlalchemy.orm import Mapped, mapped_column
-from database import Base
+from src.database import Base
 
 
 class ScrapeRequest(Base):

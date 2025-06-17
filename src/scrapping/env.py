@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from models import scrapedproduct, scraperequest, marketplace, product
+from models import scrapedproduct, scraperequest,  regression, marketplace, product
 import database
 
 # this is the Alembic Config object, which provides

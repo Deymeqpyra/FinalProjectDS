@@ -1,6 +1,7 @@
-from pydantic import BaseModel, HttpUrl
-from typing import Optional, List
+from pydantic import BaseModel, HttpUrl, Field
+from typing import Optional, List, Dict
 from datetime import date, datetime
+
 
 from sqlalchemy import JSON
 
@@ -109,3 +110,28 @@ class Product(ProductBase):
 
     class Config:
         orm_mode = True
+
+#regression
+class RegressionConfig(BaseModel):
+    dependent_variable: str = Field(..., description="Назва залежної змінної (Y)")
+    independent_variables: List[str] = Field(..., description="Список незалежних змінних (X)")
+
+class ModelSummary(BaseModel):
+    coefficients: Dict[str, float]
+    std_errors: Dict[str, float]
+    t_statistics: Dict[str, float]
+    p_values: Dict[str, float]
+    confidence_intervals: Dict[str, List[float]]
+
+class ModelQuality(BaseModel):
+    r_squared: float
+    adj_r_squared: float
+    f_statistic: float
+    f_p_value: float
+    n_observations: int
+
+class RegressionResponse(BaseModel):
+    analysis_id: int
+    model_summary: ModelSummary
+    model_quality: ModelQuality
+    formula: str

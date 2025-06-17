@@ -3,7 +3,7 @@ from urllib.parse import urljoin
 from playwright.async_api import async_playwright
 from playwright_stealth import stealth_async
 from bs4 import BeautifulSoup
-from models import marketplace
+from src.models import marketplace
 
 
 async def scrape_product(marketplace: marketplace.Marketplace, product_name: str):

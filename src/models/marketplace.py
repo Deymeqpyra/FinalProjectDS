@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, Date, String, Boolean, DateTime, null
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import date, datetime
-from database import Base
+from src.database import Base
 
 
 class Marketplace(Base):

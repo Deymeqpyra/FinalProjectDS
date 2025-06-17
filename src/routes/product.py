@@ -1,11 +1,11 @@
 import re
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import get_db
-from crud import product as crud_product
-from crud import marketplace as crud_marketplace
-from crud import scrape as crud_scrape
-from schemas import (
+from src.database import get_db
+from src.crud import product as crud_product
+from src.crud import marketplace as crud_marketplace
+from src.crud import scrape as crud_scrape
+from src.schemas import (
     ProductCreate,
     ProductUpdate,
 )
