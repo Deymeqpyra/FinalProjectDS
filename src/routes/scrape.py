@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db
 from src.schemas import (
@@ -11,8 +11,12 @@ from src.crud import scrape as crud_scrape
 from src.crud import marketplace as crud_marketplace
 from src.crud import product as crud_product
 from src.service import scrape
+from src.models import scrapedproduct
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
+import csv
+import io
+import re
 
 router = APIRouter()
 

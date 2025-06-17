@@ -78,3 +78,9 @@ async def get_scraped_products_by_request_id(db: AsyncSession, request_id: int):
         )
     )
     return result.scalars().all()
+
+
+async def get_all_scraped_products(db: AsyncSession):
+    """Отримати всі зібрані продукти з бази даних"""
+    result = await db.execute(select(scrapedproduct.ScrapedProduct))
+    return result.scalars().all()
