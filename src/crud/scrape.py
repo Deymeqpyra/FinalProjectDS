@@ -40,10 +40,22 @@ async def get_requests_by_date(date: datetime.date, db: AsyncSession):
     return result.scalars().all()
 
 
+async def find_product_by_marketplace(
+    product_id: int, marketplace_id: int, db: AsyncSession
+):
+    result = await db.execute(
+        select(scrapedproduct.ScrapedProduct)
+        .where(scrapedproduct.ScrapedProduct.marketplace_id == marketplace_id)
+        .where(scrapedproduct.ScrapedProduct.product_id == product_id)
+    )
+    return result.scalars().one()
+
+
 async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCreate):
     new_product = scrapedproduct.ScrapedProduct(
         request_id=product_data.request_id,
         marketplace_id=product_data.marketplace_id,
+        product_id=product_data.product_id,
         scraped_product_title=product_data.scraped_product_title,
         scraped_price=product_data.scraped_price,
         scraped_currency=product_data.scraped_currency,

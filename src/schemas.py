@@ -48,6 +48,7 @@ class ScrapedProductBase(BaseModel):
 class ScrapedProductCreate(ScrapedProductBase):
     request_id: int
     marketplace_id: int
+    product_id: Optional[int] = None
 
 
 class ScrapedProductResponse(ScrapedProductBase):

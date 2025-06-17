@@ -9,6 +9,7 @@ class ScrapedProduct(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     request_id: Mapped[int] = mapped_column(ForeignKey("scrape_requests.id"))
     marketplace_id: Mapped[int] = mapped_column(ForeignKey("marketplaces.id"))
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"), nullable=True)
     scraped_product_title: Mapped[str] = mapped_column(String)
     scraped_price: Mapped[str] = mapped_column(String)
     scraped_currency: Mapped[str | None] = mapped_column(String, nullable=True)

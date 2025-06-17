@@ -97,6 +97,7 @@ async def scrape_by_query_name(
         product_data = ScrapedProductCreate(
             request_id=new_request.id,
             marketplace_id=marketplace.id,
+            product_id=None,
             scraped_product_title=scrape_result.get("product_title"),
             scraped_price=scrape_result.get("price"),
             scraped_currency=scrape_result.get("currency"),
@@ -172,6 +173,7 @@ async def scrape_product_endpoint(
         product_data = ScrapedProductCreate(
             request_id=new_request.id,
             marketplace_id=marketplace.id,
+            product_id=product.id,
             scraped_product_title=scrape_result.get("product_title"),
             scraped_price=scrape_result.get("price"),
             scraped_currency=scrape_result.get("currency"),
