@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: dcbecd2285f8
+Revision ID: ded5df6e4aa8
 Revises: 
-Create Date: 2025-06-17 00:48:42.936036
+Create Date: 2025-06-17 16:27:48.308973
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'dcbecd2285f8'
+revision: str = 'ded5df6e4aa8'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -33,16 +33,23 @@ def upgrade() -> None:
     sa.Column('link_selector', sa.String(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.Column('description_selector', sa.String(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('updated_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.Date(), nullable=False),
+    sa.Column('updated_at', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
     )
     op.create_index(op.f('ix_marketplaces_id'), 'marketplaces', ['id'], unique=False)
+    op.create_table('products',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('global_query_name', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_products_id'), 'products', ['id'], unique=False)
     op.create_table('scrape_requests',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('product_name_searched', sa.String(), nullable=False),
-    sa.Column('requested_at', sa.DateTime(), nullable=False),
+    sa.Column('requested_at', sa.Date(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_scrape_requests_id'), 'scrape_requests', ['id'], unique=False)
@@ -50,15 +57,17 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('request_id', sa.Integer(), nullable=False),
     sa.Column('marketplace_id', sa.Integer(), nullable=False),
+    sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('scraped_product_title', sa.String(), nullable=False),
     sa.Column('scraped_price', sa.String(), nullable=False),
     sa.Column('scraped_currency', sa.String(), nullable=True),
     sa.Column('scraped_description', sa.JSON(), nullable=True),
     sa.Column('product_url', sa.String(), nullable=False),
-    sa.Column('scraped_at', sa.DateTime(), nullable=False),
+    sa.Column('scraped_at', sa.Date(), nullable=False),
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('error_message', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['marketplace_id'], ['marketplaces.id'], ),
+    sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.ForeignKeyConstraint(['request_id'], ['scrape_requests.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -73,6 +82,8 @@ def downgrade() -> None:
     op.drop_table('scraped_products')
     op.drop_index(op.f('ix_scrape_requests_id'), table_name='scrape_requests')
     op.drop_table('scrape_requests')
+    op.drop_index(op.f('ix_products_id'), table_name='products')
+    op.drop_table('products')
     op.drop_index(op.f('ix_marketplaces_id'), table_name='marketplaces')
     op.drop_table('marketplaces')
     # ### end Alembic commands ###

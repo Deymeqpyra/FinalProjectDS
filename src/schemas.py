@@ -1,6 +1,6 @@
 from pydantic import BaseModel, HttpUrl
 from typing import Optional, List
-from datetime import datetime
+from datetime import date, datetime
 
 from sqlalchemy import JSON
 
@@ -26,8 +26,8 @@ class MarketplaceUpdate(MarketplaceBase):
 class MarketplaceOut(MarketplaceBase):
     id: int
     is_active: bool
-    created_at: datetime
-    updated_at: datetime
+    created_at: date
+    updated_at: date
 
     class Config:
         orm_mode = True
@@ -39,7 +39,7 @@ class ScrapedProductBase(BaseModel):
     scraped_currency: Optional[str] = None
     scraped_description: Optional[dict] = None
     product_url: Optional[HttpUrl] = None
-    scraped_at: datetime
+    scraped_at: date
     status: str
     error_message: Optional[str] = None
     marketplace_name: str
@@ -48,6 +48,7 @@ class ScrapedProductBase(BaseModel):
 class ScrapedProductCreate(ScrapedProductBase):
     request_id: int
     marketplace_id: int
+    product_id: Optional[int] = None
 
 
 class ScrapedProductResponse(ScrapedProductBase):
@@ -65,7 +66,7 @@ class ScrapeRequestCreate(ScrapeRequestBase):
 
 class ScrapeRequestResponse(ScrapeRequestBase):
     id: int
-    requested_at: datetime
+    requested_at: date
 
     class Config:
         orm_mode = True
@@ -78,7 +79,7 @@ class ScrapeResultItem(BaseModel):
     price: Optional[str] = None
     description: Optional[dict] = None
     url: Optional[HttpUrl] = None
-    scraped_at: datetime
+    scraped_at: date
     error_message: Optional[str] = None
 
 
@@ -87,4 +88,24 @@ class ScrapeProductResponse(BaseModel):
     product_name_searched: str
     results: List[ScrapeResultItem]
     summary: dict
-    scraped_at: datetime
+    scraped_at: date
+
+
+class ProductBase(BaseModel):
+    global_query_name: str
+    description: str
+
+
+class ProductCreate(ProductBase):
+    pass
+
+
+class ProductUpdate(ProductBase):
+    id: int
+
+
+class Product(ProductBase):
+    id: int
+
+    class Config:
+        orm_mode = True

@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert
+from sqlalchemy.orm import joinedload
 from models import scraperequest
 from models import scrapedproduct
 from schemas import ScrapeRequestCreate
@@ -26,14 +27,35 @@ async def get_scrape_request(db: AsyncSession, request_id: int):
 
 
 async def get_all_scrape_requests(db: AsyncSession):
-    result = await db.execute(select(scraperequest))
+    result = await db.execute(select(scraperequest.ScrapeRequest))
     return result.scalars().all()
+
+
+async def get_requests_by_date(date: datetime.date, db: AsyncSession):
+    result = await db.execute(
+        select(scraperequest.ScrapeRequest).where(
+            scraperequest.ScrapeRequest.requested_at == date
+        )
+    )
+    return result.scalars().all()
+
+
+async def find_product_by_marketplace(
+    product_id: int, marketplace_id: int, db: AsyncSession
+):
+    result = await db.execute(
+        select(scrapedproduct.ScrapedProduct)
+        .where(scrapedproduct.ScrapedProduct.marketplace_id == marketplace_id)
+        .where(scrapedproduct.ScrapedProduct.product_id == product_id)
+    )
+    return result.scalars().one()
 
 
 async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCreate):
     new_product = scrapedproduct.ScrapedProduct(
         request_id=product_data.request_id,
         marketplace_id=product_data.marketplace_id,
+        product_id=product_data.product_id,
         scraped_product_title=product_data.scraped_product_title,
         scraped_price=product_data.scraped_price,
         scraped_currency=product_data.scraped_currency,
@@ -51,8 +73,8 @@ async def save_scraped_product(db: AsyncSession, product_data: ScrapedProductCre
 
 async def get_scraped_products_by_request_id(db: AsyncSession, request_id: int):
     result = await db.execute(
-        select(scraperequest).where(
-            scraperequest.ScrapeRequest.scrape_request_id == request_id
+        select(scrapedproduct.ScrapedProduct).where(
+            scrapedproduct.ScrapedProduct.request_id == request_id
         )
     )
     return result.scalars().all()

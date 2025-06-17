@@ -1,7 +1,6 @@
-
-from sqlalchemy import JSON, String, Boolean, DateTime, null
+from sqlalchemy import JSON, Date, String, Boolean, DateTime, null
 from sqlalchemy.orm import Mapped, mapped_column
-from datetime import datetime
+from datetime import date, datetime
 from database import Base
 
 
@@ -19,5 +18,5 @@ class Marketplace(Base):
     link_selector: Mapped[str] = mapped_column(String, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     description_selector: Mapped[str] = mapped_column(String, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    created_at: Mapped[date] = mapped_column(Date, default=date.today())
+    updated_at: Mapped[date] = mapped_column(Date, default=date.today())
