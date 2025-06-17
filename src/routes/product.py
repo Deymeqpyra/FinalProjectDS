@@ -66,6 +66,12 @@ async def compare_product_price(
                 "product": scraped_product2,
                 "result": f"Marketplace {marketplace1.name} has the lowest price!",
             }
+        if value1 == value2:
+            return {
+                "product": scraped_product2,
+                "result": f"Marketplace {marketplace1.name} and {marketplace2.name} has the same price!",
+            }
+
     except Exception as e:
         raise HTTPException(500, str(e))
 
